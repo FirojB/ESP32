@@ -1,0 +1,60 @@
+// ESP32 as a server, respond to browser over LAN
+
+#include"WiFi.h"
+WiFiServer server(80);
+
+void setup() 
+{
+  pinMode(16, OUTPUT);
+  Serial.begin(115200);
+  WiFi.begin("NOWTVU9FNU","YqTRz5ZedDbe");
+  Serial.print("I'm Connecting to NOWTVU9FNU wifi ...");
+  while(WiFi.status()!=WL_CONNECTED)
+  {
+   Serial.print(" . ");
+   digitalWrite(16,HIGH);
+   delay(100);
+   digitalWrite(16,LOW);
+   delay(100);
+  }
+
+  Serial.println();
+  Serial.println(" I'm online now , my IP is :");  
+  Serial.print(WiFi.localIP());
+  digitalWrite(16,HIGH);
+  server.begin();
+  Serial.print(" Server started ");
+}
+
+void loop()
+{
+WiFiClient client_obj = server.available(); //creating client object of wifi client
+if(!client_obj)
+  return;
+
+Serial.println(" new Client");
+while (!client_obj.available()) // keep in loop till get request from client (Web browser)
+ {
+    Serial.println(" No Client request !!! ");
+ }
+ //get client detals and store in req string variable
+ String req = client_obj.readString();
+ // print the client details
+ Serial.println(req);
+
+/* Store the message in string vaiable replyas HTML but in single line
+    <!DOCTYPE HTML>
+    <HTML>
+    <BODY>
+    !!!!!!!   Hello, from ESP32 Server  !!!!!!!
+    </BODY>
+    </HTML>
+ */
+ 
+ String reply = "HTTP/1.1 200 OK\r\nContenttype:text/html\r\n\r\n<!DOCTYPE HTML><HTML><BODY>!!!!!!!   Hello, from ESP32 Server  !!!!!!!</BODY></HTML>";
+ client_obj.print(reply);
+
+ 
+ delay(100);
+ client_obj.stop();
+}
