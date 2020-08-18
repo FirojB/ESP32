@@ -1,0 +1,24 @@
+#include"WiFi.h"
+
+void setup() 
+{
+  Serial.begin(115200);
+  WiFi.begin("NOWTVU9FNU","YqTRz5ZedDbe");
+  Serial.print("I'm Connecting to NOWTVU9FNU wifi ...");
+  // Wile loop is to hold the program till ESP32 get connectted, once connected the move on for nest instruction
+  while(WiFi.status()!=WL_CONNECTED)
+  {
+   Serial.print(" . ");
+   delay(500);
+  }
+
+  Serial.println();
+  Serial.println(" I'm online now , my IP is :");  
+  Serial.print(WiFi.localIP());
+
+
+}
+void loop()
+{
+  
+}
