@@ -11,10 +11,10 @@
 #define dht_dpin 5
 
 // Get channel number from ThinkSpeak.com
-#define IoT_Channel 1119928
+#define IoT_Channel 1109900 // This is mine channel number, hence it will not work with yours code
 
 // Get API Key from www.thingSpeak.com account.
-#define Api_Key "ZBUGL120YLQRL8VP"
+#define Api_Key "ZBUL1208LQRL8VPL" // This is mine API key, hence it will not work with yours code
 
 //Creating a wifi client to make HTTP request
 WiFiClient client;
@@ -26,8 +26,8 @@ void wifi_connect()
 {
   pinMode(16, OUTPUT);
   Serial.begin(115200);
-  WiFi.begin("NOWTVU9FNU","YqTRz5ZedDbe");
-  Serial.print("I'm Connecting to NOWTVU9FNU wifi ...");
+  WiFi.begin("NOWTVU90NU","YQ8Rz5ZedDbe"); // This is mine WiFi SSID & Password, hence it will not work with yours code
+  Serial.print("I'm Connecting to NOWTVU90NU wifi ...");
   while(WiFi.status()!=WL_CONNECTED)
   {
    Serial.print(" . ");
