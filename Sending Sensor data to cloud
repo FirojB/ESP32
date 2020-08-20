@@ -1,0 +1,77 @@
+//Getting data from sensors and sending to on server at www.thingSpeak.com
+
+#include<DHT.h>
+#include<WiFi.h>
+#include"ThingSpeak.h"
+
+//DHT Type is DHT11
+#define DHTTYPE DHT11
+
+// GPIO no 5 is used for data input from DHT sensors
+#define dht_dpin 5
+
+// Get channel number from ThinkSpeak.com
+#define IoT_Channel 1119928
+
+// Get API Key from www.thingSpeak.com account.
+#define Api_Key "ZBUGL120YLQRL8VP"
+
+//Creating a wifi client to make HTTP request
+WiFiClient client;
+
+DHT dht(dht_dpin ,DHTTYPE);
+
+//Function to connect WiFi network
+void wifi_connect()
+{
+  pinMode(16, OUTPUT);
+  Serial.begin(115200);
+  WiFi.begin("NOWTVU9FNU","YqTRz5ZedDbe");
+  Serial.print("I'm Connecting to NOWTVU9FNU wifi ...");
+  while(WiFi.status()!=WL_CONNECTED)
+  {
+   Serial.print(" . ");
+   digitalWrite(16,HIGH);
+   delay(500);
+   digitalWrite(16,LOW);   
+  }
+
+  Serial.println();
+  Serial.println(" I'm online now , my IP is :");  
+  Serial.print(WiFi.localIP());
+  digitalWrite(16,HIGH);
+  delay(200);
+}
+
+
+void setup() 
+{
+  wifi_connect(); 
+  dht.begin();
+  ThingSpeak.begin(client);
+}
+
+
+void loop()
+{
+  float hu = dht.readHumidity();
+  // float te= dht.readTemperature(True); - to get in Fahrenheit
+  float te= dht.readTemperature(); //Now  it will give in Celsius
+  
+/*
+ * 
+ThingSpeak.writeField(IoT_Channel,1,te,Api_Key);
+ThingSpeak.writeField(IoT_Channel,2,hu,Api_Key);
+
+we can connect like above but that creates two HTTP reguests whis is not good,
+so better to creat only once request to send data in single shot.
+writeField(s) --uses 4 parameters
+writeField --uses only 2 parameters
+ */
+
+ThingSpeak.setField(1,te);
+ThingSpeak.setField(2,hu);
+ThingSpeak.writeFields(IoT_Channel,Api_Key);
+
+delay(15000);
+}
