@@ -1,0 +1,62 @@
+
+// ESP32 as a server, respond to browser request over same Network
+
+#include"WiFi.h"
+#include<random>
+#include"String.h"
+
+
+WiFiServer server(80);
+
+void setup() 
+{
+  // For LED pin out
+  pinMode(16, OUTPUT);
+  
+  Serial.begin(115200);
+  
+  //For wifi conneectivity
+  WiFi.begin("NOWTVU9FNU","YqTRz5ZedDbe");
+  Serial.print("I'm Connecting to NOWTVU9FNU wifi ...");
+  while(WiFi.status()!=WL_CONNECTED)
+  {
+   Serial.print(" . ");
+   digitalWrite(16,HIGH);
+   delay(100);
+   digitalWrite(16,LOW);
+   delay(100);
+  }
+
+  Serial.println("I'm online now & my IP is :");  
+  Serial.print(WiFi.localIP());
+  server.begin();
+  Serial.println("Server started\n ");
+}
+
+void loop()
+{
+WiFiClient client_obj = server.available(); //creating client object of wifi client
+if(!client_obj)
+  return;
+
+while (!client_obj.available()) 
+  {
+    // keep in loop till get request from clien - Web browser
+  }
+ 
+ //get client detals and store in req string variable
+  String req = client_obj.readString();
+
+ // spot the exact value in a string we are using array - req[]
+  if(req[5]=='1')
+    //Makes LED ON
+    digitalWrite(16,HIGH);
+ else if (req[5]=='0')
+   // Makes LED OFF
+    digitalWrite(16,LOW);
+ else
+    Serial.println("Entr the right option");
+
+ delay(100);
+ client_obj.stop();
+}
